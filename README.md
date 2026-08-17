@@ -8,6 +8,7 @@ Professional n8n workflow portfolio for AI automation, content systems, RAG assi
 - Category-based folder structure
 - Clear documentation for import and reuse
 - GitHub profile materials included
+- Preview assets included in `assets/`
 
 ## Repository structure
 
@@ -42,9 +43,14 @@ Several source workflows include live credential references and embedded API tok
 
 - [Workflow catalog](docs/WORKFLOW_CATALOG.md)
 - [Workflow index](workflows/INDEX.md)
+- [Import guide](docs/IMPORT_GUIDE.md)
 - [GitHub profile audit](docs/PROFILE_AUDIT.md)
 - [GitHub profile README draft](docs/GITHUB_PROFILE_README.md)
 - [Security notes](docs/SECURITY_NOTES.md)
+
+## Assets
+
+The `.jfif` files in `assets/` are preview images and branding visuals for the repo. They are not required for importing n8n workflows.
 
 ## GitHub positioning
 
