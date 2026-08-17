@@ -44,14 +44,14 @@ This repository is built to look and feel like a real automation portfolio, not 
 
 The images in [assets](assets) are preview and branding visuals for the repo.
 
-![Preview 1](assets/Gemini_Generated_Image_2rh6bt2rh6bt2rh6.png)
-![Preview 2](assets/Gemini_Generated_Image_5sw7yy5sw7yy5sw7.png)
-![Preview 3](assets/Gemini_Generated_Image_7vdcae7vdcae7vdc.png)
-![Preview 4](assets/Gemini_Generated_Image_b7ysy0b7ysy0b7ys.png)
-![Preview 5](assets/Gemini_Generated_Image_btvu6vbtvu6vbtvu.png)
-![Preview 6](assets/Gemini_Generated_Image_enud63enud63enud.png)
-![Preview 7](assets/Gemini_Generated_Image_ibyfapibyfapibyf.png)
-![Preview 8](assets/Gemini_Generated_Image_it7y7kit7y7kit7y.png)
+![Preview 1](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_2rh6bt2rh6bt2rh6.png?raw=1)
+![Preview 2](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_5sw7yy5sw7yy5sw7.png?raw=1)
+![Preview 3](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_7vdcae7vdcae7vdc.png?raw=1)
+![Preview 4](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_b7ysy0b7ysy0b7ys.png?raw=1)
+![Preview 5](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_btvu6vbtvu6vbtvu.png?raw=1)
+![Preview 6](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_enud63enud63enud.png?raw=1)
+![Preview 7](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_ibyfapibyfapibyf.png?raw=1)
+![Preview 8](https://github.com/sikander1020/N8N-Workflows/blob/main/assets/Gemini_Generated_Image_it7y7kit7y7kit7y.png?raw=1)
 
 ## How to use
 
