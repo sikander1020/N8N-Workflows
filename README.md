@@ -1,43 +1,61 @@
 # N8N Workflow Hub
 
-Professional n8n workflow portfolio for AI automation, content systems, RAG assistants, inbox ops, and video pipelines.
+> A curated portfolio of sanitized n8n automations for AI content, RAG assistants, inbox ops, and video workflows.
 
-## Highlights
+[![n8n](https://img.shields.io/badge/n8n-workflows-orange?style=flat-square)](https://n8n.io)
+[![GitHub repo](https://img.shields.io/badge/GitHub-portfolio--repo-black?style=flat-square)](https://github.com/sikander1020/N8N-Workflows)
+[![Status](https://img.shields.io/badge/status-curated%20and%20sanitized-success?style=flat-square)](https://github.com/sikander1020/N8N-Workflows)
 
-- Curated, sanitized workflow exports
-- Category-based folder structure
-- Clear documentation for import and reuse
-- GitHub profile materials included
-- Preview assets included in `assets/`
+## What this is
 
-## Repository structure
+This repository is built to look and feel like a real automation portfolio, not a raw export dump. It organizes your best workflows into a clean structure, adds import guidance, and includes profile-ready documentation.
 
-- `workflows/content` - trend research and social content automation
-- `workflows/video` - ad creation and video generation pipelines
-- `workflows/rag` - knowledge base and chatbot workflows
-- `workflows/ops` - inbox and inventory automations
-- `workflows/assistants` - standalone AI assistant flows
-- `docs` - profile audit, workflow catalog, security notes, and profile README draft
+## Quick view
+
+- AI content automation and multi-platform posting
+- RAG pipeline and chatbot systems
+- Email and inventory assistants
+- Veo3 and video publishing workflows
+- Approval-based creative generation
+- GitHub profile assets and documentation
 
 ## Featured workflows
 
-- AI-powered multi-social media automation
-- RAG pipeline and chatbot
-- Email AI agent
-- Inventory update AI
-- Veo3 video generation and YouTube publishing
-- Ad creation approval flow
+| Area | What it does |
+| --- | --- |
+| Content | Social trend research and multi-channel publishing |
+| Video | Ad creative, Veo3 prompts, POV generation, and publishing |
+| RAG | Google Drive ingestion into Pinecone with chat support |
+| Ops | Email triage and inventory updates |
+| Assistant | Webhook-based AI assistant workflow |
 
-## Important note
+## Repository map
 
-Several source workflows include live credential references and embedded API tokens. This repo is structured for professional sharing, so secrets should be replaced with n8n credentials, environment variables, or placeholders before publishing.
+| Folder | Purpose |
+| --- | --- |
+| [workflows/content](workflows/content) | Trend research and social content automation |
+| [workflows/video](workflows/video) | Ad creation and video generation pipelines |
+| [workflows/rag](workflows/rag) | Knowledge base and chatbot workflows |
+| [workflows/ops](workflows/ops) | Inbox and inventory automations |
+| [workflows/assistants](workflows/assistants) | Standalone AI assistant flows |
+| [docs](docs) | Catalog, import, security, and profile docs |
+
+## Gallery
+
+The images in [assets](assets) are preview and branding visuals for the repo.
+
+| Preview | File |
+| --- | --- |
+| ![Preview 1](assets/Gemini_Generated_Image_2rh6bt2rh6bt2rh6.jfif) | Gemini_Generated_Image_2rh6bt2rh6bt2rh6.jfif |
+| ![Preview 2](assets/Gemini_Generated_Image_5sw7yy5sw7yy5sw7.jfif) | Gemini_Generated_Image_5sw7yy5sw7yy5sw7.jfif |
+| ![Preview 3](assets/Gemini_Generated_Image_7vdcae7vdcae7vdc.jfif) | Gemini_Generated_Image_7vdcae7vdcae7vdc.jfif |
 
 ## How to use
 
-1. Import one workflow at a time from the category folder that matches your use case.
-2. Reconnect credentials in your own n8n instance.
-3. Replace sheet IDs, webhook URLs, folder IDs, and model names.
-4. Test each workflow in a staging environment before turning it on.
+1. Open the workflow you want from the correct category folder.
+2. Import it into your n8n instance.
+3. Reconnect credentials and replace any placeholder values.
+4. Follow [docs/IMPORT_GUIDE.md](docs/IMPORT_GUIDE.md) before enabling the flow.
 
 ## Documentation
 
@@ -48,9 +66,9 @@ Several source workflows include live credential references and embedded API tok
 - [GitHub profile README draft](docs/GITHUB_PROFILE_README.md)
 - [Security notes](docs/SECURITY_NOTES.md)
 
-## Assets
+## Important note
 
-The `.jfif` files in `assets/` are preview images and branding visuals for the repo. They are not required for importing n8n workflows.
+Several source workflows include credential references and API placeholders. Keep secrets outside the exported JSON and use n8n credentials or environment variables when importing.
 
 ## GitHub positioning
 
