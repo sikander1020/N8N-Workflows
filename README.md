@@ -46,18 +46,18 @@ The images in [assets](assets) are preview and branding visuals for the repo.
 
 <table>
 	<tr>
-		<td><img src="assets/Gemini_Generated_Image_2rh6bt2rh6bt2rh6.png" width="240" alt="Preview 1" /></td>
-		<td><img src="assets/Gemini_Generated_Image_5sw7yy5sw7yy5sw7.png" width="240" alt="Preview 2" /></td>
-		<td><img src="assets/Gemini_Generated_Image_7vdcae7vdcae7vdc.png" width="240" alt="Preview 3" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_2rh6bt2rh6bt2rh6.png" width="240" alt="Preview 1" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_5sw7yy5sw7yy5sw7.png" width="240" alt="Preview 2" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_7vdcae7vdcae7vdc.png" width="240" alt="Preview 3" /></td>
 	</tr>
 	<tr>
-		<td><img src="assets/Gemini_Generated_Image_b7ysy0b7ysy0b7ys.png" width="240" alt="Preview 4" /></td>
-		<td><img src="assets/Gemini_Generated_Image_btvu6vbtvu6vbtvu.png" width="240" alt="Preview 5" /></td>
-		<td><img src="assets/Gemini_Generated_Image_enud63enud63enud.png" width="240" alt="Preview 6" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_b7ysy0b7ysy0b7ys.png" width="240" alt="Preview 4" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_btvu6vbtvu6vbtvu.png" width="240" alt="Preview 5" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_enud63enud63enud.png" width="240" alt="Preview 6" /></td>
 	</tr>
 	<tr>
-		<td><img src="assets/Gemini_Generated_Image_ibyfapibyfapibyf.png" width="240" alt="Preview 7" /></td>
-		<td><img src="assets/Gemini_Generated_Image_it7y7kit7y7kit7y.png" width="240" alt="Preview 8" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_ibyfapibyfapibyf.png" width="240" alt="Preview 7" /></td>
+		<td><img src="https://raw.githubusercontent.com/sikander1020/N8N-Workflows/main/assets/Gemini_Generated_Image_it7y7kit7y7kit7y.png" width="240" alt="Preview 8" /></td>
 		<td></td>
 	</tr>
 </table>
