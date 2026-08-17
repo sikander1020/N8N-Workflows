@@ -1,0 +1,161 @@
+﻿{
+  "name": "FYP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "=#overview\nYou are a professional medical assistant. You job is to give proper treatment according to the symptoms and if it is far severe the recommend a doctor or just say you have to go to doctor immedieatly.\n\n##\n- return accurate answers \n- do not add false result or false answers\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -144
+      ],
+      "id": "090ac09e-4096-495a-807a-d4b79ba9c66d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        80
+      ],
+      "id": "4e6337ac-47ae-4660-a588-d6507069b779",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "rT2cwKymmDmHYDTx",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b4d81e28-d371-424c-a8ba-943c4e75f356",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        16,
+        -144
+      ],
+      "id": "22135608-cc82-4f25-95f0-508cd8bd4cdc",
+      "name": "Webhook",
+      "webhookId": "b4d81e28-d371-424c-a8ba-943c4e75f356"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        816,
+        -144
+      ],
+      "id": "8c41a443-c9e9-4801-b692-fc01e2fe1a8e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f3c92bdf-215b-4687-a261-506da1e3b5e8",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        -144
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "F5k5KLr7bgqckoJZ",
+    "timeSavedPerExecution": 1
+  },
+  "versionId": "e928bb38-3a22-4c79-b8f6-3adee7c37080",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d3b4629ef669273fa8e2015abf08bed9d147dbeed1deea680972a2c6b2a4d686"
+  },
+  "id": "F5k5KLr7bgqckoJZ",
+  "tags": []
+}

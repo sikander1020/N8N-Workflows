@@ -1,0 +1,932 @@
+﻿{
+  "name": "Ad Creation",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        320
+      ],
+      "id": "d958d68d-b218-4f1a-9d0c-445f80310abc",
+      "name": "Telegram Trigger",
+      "webhookId": "c6ed9665-75b0-4e55-b8a6-c64d707d39ec",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "10f6f170-da73-40b9-961c-2312644c447c",
+              "leftValue": "={{ $json.data.Approve }}",
+              "rightValue": "=Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1712,
+        416
+      ],
+      "id": "1ac3ece9-48f1-44ec-9959-a1e784ac08cc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "description": "First you will takes the initial user message (and possibly the image analysis) as input and uses a Chat Model and Prompt Parser to formulate a preliminary response.\n\n\nSecondly, then refined prompts and uses an OpenAI Chat Model to generate a response. The Structured Output Parser suggests it's designed to produce a response in a specific format (e.g., JSON)"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        176
+      ],
+      "id": "00177497-805b-4933-b3c2-806e67b7763c",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[2].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        544
+      ],
+      "id": "928f72c4-6c13-479e-8556-93aa0fb69230",
+      "name": "Get a file",
+      "webhookId": "6ec29654-9f08-421c-acaf-049f6cdac714",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"image_prompt\": \"string\",\n\"video_prompt\": \"stringified JSON\",\n\"caption\": \"short caption\",\n\"creative_summary\": \"summary of the combined visual concept\",\n\"aspect_ratio\": \"vertical or horizontal\",\n\"video_model\": \"ve03 or veo3 fast\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1712,
+        176
+      ],
+      "id": "124934c3-ef4f-469f-acb3-43af78854fd2",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "message": "=CAPTION**\n{{ $json.caption.replace(/[*_`]/g, '') }}\n**\nCREATIVE SUMMARY**\n{{ $json.creative_summary.replace(/[*_`]/g, '') }}\n\n**\naspect_ratio **\n{{ $json.aspect_ratio }}\n\n**\nvideo_model**\n{{ $json.video_model }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Approve",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Comments",
+              "placeholder": "Type your comments here"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        416
+      ],
+      "id": "0c4ef123-34de-475c-95da-fbe5d4333860",
+      "name": "Get Approval",
+      "webhookId": "3d92b605-b158-4728-b134-74e0af609c48",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=This is the initial creative brief:\n{{ $('Telegram Trigger').item.json.message.caption }}\nHere are additional comments:\n{{ $('Get Approval').item.json.data.Comments }}\n\nDescription of the image provided to you. Make sure to focus on just the product:\n{{ $('Analyze Image').item.json.choices[0].message.content }}\nUse the Think tool to make sure the image prompt and video prompt are in stringified\n\n\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are AdVision â€” a product creative strategist that turns any product description into powerful, scroll-stopping **image and video ad prompts**.\n\nYour job is to generate creative briefs optimized for paid ads across:\nInstagram, TikTok, Facebook, YouTube, LinkedIn, and Meta Ads Manager.\n\nEach time you're activated, youâ€™ll receive a **product description**, either manually provided or automatically fed from:\n{{ $json.choices[0].message.content }}\n\nYour task is to create:\n1. **Image Prompt** â€” Designed for AI image tools like Midjourney, Leonardo, DALLÂ·E.\n2. **Video Prompt** â€” Designed for AI video tools like Sora, Pika, Runway, or for real editors.\n\nEach creative brief must include:\n- Campaign Title: Short, brandable, and scroll-hooking.\n- Platform(s): Best-fit channels for the idea.\n- Concept: 1â€“2 sentence angle or storyline that sells the product.\n- Image Prompt: Aesthetic, scene, subject, lighting, mood, product detail.\n- Video Prompt: Scene-by-scene concept, transitions, voiceover or hook ideas.\n\nRules:\n- Match platform psychology (TikTok = real/raw, Instagram = aesthetic, LinkedIn = polished).\n- Speak to benefits more than features.\n- Use language that mirrors top-performing direct-response ads.\n- Donâ€™t repeat generic ideas. Every prompt must feel tailored and high-converting.\n- Use inner reasoning (Think tool) to validate each creative choice before outputting.\n\nYou can adapt to **any product category** â€” beauty, tech, SaaS, fashion, home goods, wellness, etc.\n\nStyle guidance is optional but should be used if given (e.g. \"make it luxury\", \"UGC\", \"minimal\", \"cinematic\").\n\nYou are a hybrid of a performance marketer and a creative director â€” you build assets that sell.\n\nOUTPUT FORMAT:\nCampaign Title:  \nPlatform(s):  \nConcept:  \nImage Prompt:  \nVideo Prompt:\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        2000,
+        432
+      ],
+      "id": "59ffdce2-8dd6-4a94-8961-220e90907b61",
+      "name": "Revised AI agent"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "=Describe the product and brand in this image in full detail. Fully ignore the background. Focus ONLY on the product",
+        "imageUrls": "={{ $json.data.downloadUrl }}",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        832,
+        768
+      ],
+      "id": "873b4853-1c76-4751-86d4-47de474798d9",
+      "name": "Analyze Image",
+      "credentials": {
+        "openAiApi": {
+          "id": "6dNo7ElFgPALOCWO",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        176
+      ],
+      "id": "a11b802a-630c-492f-929c-9178f5be5b0e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "6dNo7ElFgPALOCWO",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Great! your creative is in progress. It will take some time.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        704
+      ],
+      "id": "96632705-8c15-42a3-99b5-956563623458",
+      "name": "In Progress",
+      "webhookId": "469c8cf8-442e-4c2b-8c49-1df7c6d049fe",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b32d7131-9194-40d8-b481-c0a9526dddb3",
+              "name": "image_prompt",
+              "value": "={{ $json.output.image_prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "6a94ef45-c02a-46b2-9b8a-dc830469b359",
+              "name": "video_prompt",
+              "value": "={{ $json.output.video_prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "89b19f3a-97ee-4067-a398-e9f51f7b4211",
+              "name": "caption",
+              "value": "={{ $json.output.caption }}",
+              "type": "string"
+            },
+            {
+              "id": "44a52b5f-558d-4300-a5e2-1e9c19e2b67f",
+              "name": "creative_summary",
+              "value": "={{ $json.output.creative_summary }}",
+              "type": "string"
+            },
+            {
+              "id": "5f3ed51d-d399-4ae4-a986-9c3d629d43f6",
+              "name": "aspect_ratio",
+              "value": "={{ $json.output.aspect_ratio }}",
+              "type": "string"
+            },
+            {
+              "id": "eab7c57f-e294-4e3c-8a57-be6e5c742d9c",
+              "name": "video_model",
+              "value": "={{ $json.output.video_model }}\"\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        416
+      ],
+      "id": "49b0a7b1-b017-49d7-9d7f-1a6da8258d37",
+      "name": "Set Prompts"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/runway/record-detail",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2048,
+        704
+      ],
+      "id": "3cf1f728-d289-4eae-90d9-e86653f7fd3b",
+      "name": "GET Image Status"
+    },
+    {
+      "parameters": {
+        "amount": 300
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1824,
+        704
+      ],
+      "id": "0931f6ee-b648-44a0-9cd5-c0afc3c4088b",
+      "name": "Wait",
+      "webhookId": "b20b7ac4-1d18-4c1e-83f2-44d1e9c69965"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot7676173368:AAHLPADyb0DVXMGRyIthCWBZgEX85ktbSMY/{{ $(\"Get a file\").item.json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        752
+      ],
+      "id": "26476e4d-efa7-4326-9e51-4c6e399c7c73",
+      "name": "Download Telegram Image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kieai.redpandaai.co/api/file-stream-upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "uploadPath",
+              "value": "={{ $json.result.file_path }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        976
+      ],
+      "id": "4386ad40-a2ea-4b0c-9f0c-67a40a8663c8",
+      "name": "creating url"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "file": "={{ $json.data.response.resultUrls[0] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        976
+      ],
+      "id": "16c86a95-b79a-4ecb-8120-bb70c14ee734",
+      "name": "Send a photo message",
+      "webhookId": "ce711962-efa8-46c8-b6c1-b9d5507e02e7",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/runway/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Generate 4o Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        704
+      ],
+      "id": "926d3593-c030-4c6b-92d8-de0f1dec8e26"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get original image URL from \"creating url\" node\nconst url =$('creating url').first().json.data.downloadUrl;\nif (!url) {\n  throw new Error(\"No image URL found in 'creating url' node.\");\n}\n\n// Get the prompt directly from current node's JSON\nconst promptText = $('Set Prompts').first().json.image_prompt|| \"Default backup prompt\";\n\n// Build payload for image-to-image regeneration\nreturn [\n  {\n    json: {\n      taskType: \"mj_img2img\", // Regenerate from existing image\n      fileUrls: [url],\n      prompt: promptText,\n      speed: \"relaxed\",\n      aspectRatio: \"3:2\",\n      version: \"7\",\n      variety: 1,\n      stylization: 50,\n      weirdness: 0,\n      waterMark: \"\",\n      callBackUrl: \"\",\n      ow: 512\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        704
+      ],
+      "id": "f13fb538-ee07-4330-8372-d85ce359125a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/runway/record-detail",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        976
+      ],
+      "id": "6f256669-3006-43da-b82e-5c9b3336cd92",
+      "name": "GET Image Status1"
+    },
+    {
+      "parameters": {
+        "amount": 300
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1856,
+        976
+      ],
+      "id": "d4fee200-5e45-46a3-a5c3-2a6ed6ad6827",
+      "name": "Wait1",
+      "webhookId": "b20b7ac4-1d18-4c1e-83f2-44d1e9c69965"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/runway/generate",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "quality",
+              "value": "720p"
+            },
+            {
+              "name": "aspectRatio",
+              "value": "16:9"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Create Veo 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1616,
+        976
+      ],
+      "id": "8ad8b027-9316-4c8a-b8f6-5bbea3cda94c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1ï¸âƒ£ Get values from \"Set Prompts\" node\nconst promptText = $('Set Prompts').first().json.video_prompt || \"Default video prompt\";\n\n// 2ï¸âƒ£ Get image URL from \"GET Image Status\" node\nconst imageUrl = $('GET Image Status').first().json.data.resultInfoJson.resultUrls[3]?.resultUrl\n  || \"https://placeholder.url/fallback.jpg\";\n\n// 3ï¸âƒ£ Return payload for Runway API (NO model field)\nreturn [\n  {\n    json: {\n      prompt: promptText,\n      imageUrl: imageUrl,\n      duration: 5,               // 5 seconds\n      quality: \"720p\",           // 720p quality\n      aspectRatio: \"16:9\",       // fixed ratio\n      waterMark: \"\",             // no watermark\n      callBackUrl: \"https://your-callback-endpoint.com\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        976
+      ],
+      "id": "f8d5cc15-5e4e-4c03-b5a9-aa4e00f9bc61",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=This is the initial creative brief:\n{{ $('Telegram Trigger').item.json.message.caption }}\nDescription of the product:\n{{ $json.choices[0].message.content }}\nUse the Think tool to double check your output\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are AdStruct â€” a creative strategist AI that transforms product descriptions into structured visual ad prompts for performance marketing campaigns.\n\nYour task is to analyze a product description and generate the following fields in plain text:\n\n- image_prompt: A highly visual, emotionally-driven scene description written for AI image tools like Midjourney, DALLÂ·E, or Leonardo. Focus on product placement, lighting, environment, aesthetic, mood, and style. Be descriptive and specific. Avoid generic prompts.\n\n- video_prompt: A stringified JSON representing a complete video concept. Include scene-by-scene structure, transitions, camera angles, mood, suggested voiceover/dialogue hooks, and pacing. Design it for tools like Sora, Runway, or use by human editors. This JSON should be functional and easy to interpret.\n\n- caption: A short, native-feeling caption written for platforms like TikTok, Instagram, or Meta Ads. It should grab attention fast and be aligned to the creative angle â€” emotional, benefit-driven, curiosity-based, or bold.\n\n- creative_summary: A concise summary of the combined visual idea. Explain in 1â€“2 sentences how the image and video work together, what they convey emotionally, and why this direction will convert.\n\n- aspect_ratio: Always use â€œ16:9â€.\n\n- video_model: Always use â€œrunwayâ€.\n\nUse the following input format:\n\nDescription of the product: {{ $json.choices[0].message.content }}\n\nRules:\n\n- Do not return any explanations â€” only the final values in order.\n\n- Do not change any text in the image or video you generate keep everything original ( text, logos, charcaters etc)\n\n- Do not use placeholders or generic filler. Every field must be clear, relevant, and conversion-minded.\n\n- Use emotional intelligence and creative logic to make the product shine visually and contextually.\n\n- Match tone and style based on product type (e.g. beauty = clean/luxury, tech = sleek/futuristic, wellness = warm/natural).\n\n- Make sure the video_prompt is formatted as a valid stringified JSON.\n\nOutput structure:\n\nimage_prompt:\n\nvideo_prompt:\n\ncaption:\n\ncreative_summary:\n\naspect_ratio: 16:9\n\nvideo_model: runway"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        416
+      ],
+      "id": "3dc6ef72-2873-4852-937c-c652bd500054",
+      "name": "Initial AI Prompt1"
+    },
+    {
+      "parameters": {
+        "operation": "sendVideo",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "file": "={{ $json.data.videoInfo.videoUrl }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2448,
+        640
+      ],
+      "id": "d19d84f1-7d9d-458e-bc71-4e7a2e7bf068",
+      "name": "Send  video",
+      "webhookId": "51d82e83-444e-43f1-a7d4-608f93ba2ae3",
+      "credentials": {
+        "telegramApi": {
+          "id": "JXfnvZz6iQeIROVx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        640
+      ],
+      "id": "c1b4e0f9-8fbf-42ef-b5ed-9d7b948a0607",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "In Progress",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Revised AI agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Revised AI agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Initial AI Prompt1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Download Telegram Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Revised AI agent",
+            "type": "ai_outputParser",
+            "index": 0
+          },
+          {
+            "node": "Initial AI Prompt1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Approval": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revised AI agent": {
+      "main": [
+        [
+          {
+            "node": "Get Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Initial AI Prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Revised AI agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Initial AI Prompt1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "In Progress": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Prompts": {
+      "main": [
+        [
+          {
+            "node": "Get Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "GET Image Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Telegram Image": {
+      "main": [
+        [
+          {
+            "node": "creating url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "creating url": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Image Status": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Generate 4o Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate 4o Image1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "GET Image Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Veo 3": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Create Veo 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initial AI Prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Image Status1": {
+      "main": [
+        [
+          {
+            "node": "Send  video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send  video": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6cf363fd-ef2d-41a9-a2ec-4a16bf9f7f78",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3a7fa6c1b87c7d00c40cd3cee6663058f7ddac7b0a1c05f951bef97a90065d5b"
+  },
+  "id": "5mdV2eTk0tJZvMz2",
+  "tags": []
+}

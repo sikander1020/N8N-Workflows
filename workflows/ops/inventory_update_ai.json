@@ -1,0 +1,234 @@
+﻿{
+  "name": "inventory update ai",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -656,
+        -224
+      ],
+      "id": "6699277b-d1f3-4d7c-bcf1-195c8b9cbda7",
+      "name": "When chat message received",
+      "webhookId": "23ab8235-c29b-4749-9b0c-0c18ed7bdf1f"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        -224
+      ],
+      "id": "c554db18-80ac-400c-b167-7e92e9ffa12b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        -48
+      ],
+      "id": "df3f0cff-e724-4a3b-86eb-73dda9669913",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "cR1vYSibhZ98PWrt",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        -32
+      ],
+      "id": "8ee9a0d5-438f-401b-8a4c-24b2c3157107",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY",
+          "mode": "list",
+          "cachedResultName": "grocery",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "item name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('item_name', ``, 'string') }}",
+            "quantity in stock": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('quantity_in_stock', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "item name"
+          ],
+          "schema": [
+            {
+              "id": "item name",
+              "displayName": "item name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "quantity in stock",
+              "displayName": "quantity in stock",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -80,
+        -32
+      ],
+      "id": "27836e84-b64b-469e-990a-4db1e3b2e583",
+      "name": "update inventory",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "32YmUnagfIup8W3X",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY",
+          "mode": "list",
+          "cachedResultName": "grocery",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uP1nqyhbMcQtYFgHVYVOrOo7d-8jyL3G1Fe40M8JQXY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        80,
+        -48
+      ],
+      "id": "a4c0348c-6207-4904-a85f-129ef22322c7",
+      "name": "inventory",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "32YmUnagfIup8W3X",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update inventory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "inventory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

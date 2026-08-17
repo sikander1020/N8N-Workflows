@@ -1,0 +1,16 @@
+# Node and editor noise
+node_modules/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets and local env
+.env
+.env.local
+*.key
+*.pem
+*.secret
+
+# n8n exports and backups
+*.log
+*.tmp
